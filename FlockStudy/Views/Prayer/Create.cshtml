@@ -1,0 +1,41 @@
+﻿@model FlockStudy.Models.ViewModels.AddPrayerViewModel
+@{
+    ViewData["Title"] = "";
+}
+
+<div class="p-4">
+    <div class="w-full max-w-lg rounded-lg bg-white p-8 shadow-lg">
+        <h1 class="mb-6 text-center text-2xl font-semibold text-gray-800">Add Prayer Request</h1>
+
+        <form asp-action="Create" method="post">
+            <!-- Title -->
+            <div class="mb-4">
+                <label for="Title" class="block text-sm font-medium text-gray-700">Title</label>
+                <input type="text" id="Title" asp-for="Title"
+                       class="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <span asp-validation-for="Title" class="text-sm text-red-500"></span>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-6">
+                <label for="Description" class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea id="Description" asp-for="Description" rows="4"
+                          class="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                <span asp-validation-for="Description" class="text-sm text-red-500"></span>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end">
+                <a asp-action="Index" asp-controller="Home"
+                   class="mr-3 rounded-lg border border-gray-300 px-4 py-2 text-gray-600 hover:bg-gray-100">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Add Prayer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+

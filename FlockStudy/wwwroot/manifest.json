@@ -4,7 +4,7 @@
   "description": "A Bible study prayer accountability app for friends",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fde2ea",
+  "background_color": "#fffff",
   "theme_color": "#ffafcc",
   "icons": [
     {

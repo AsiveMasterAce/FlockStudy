@@ -1,0 +1,9 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "./FlockStudy/Dockerfile"
+
+[deploy]
+startCommand = "dotnet FlockStudy.dll"
+restartPolicyType = "always"
+healthcheckPath = "/"
+healthcheckTimeout = 30

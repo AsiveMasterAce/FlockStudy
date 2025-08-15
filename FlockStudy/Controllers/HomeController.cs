@@ -27,12 +27,26 @@ namespace FlockStudy.Controllers
         public async  Task<IActionResult> Index()
         {
             if (!User.Identity.IsAuthenticated)
-            {
                 return RedirectToAction("Login", "Account");
+            try
+            {
+                var dashboard = await _prayerService.GetDashboardAsync(await getUserId());
+                return View(dashboard);
             }
-            var dashboard = await _prayerService.GetDashboardAsync(await getUserId());
-            return View(dashboard);
+            catch (Exception ex)
+            {
+                var user = await _userService.GetCurrentUserAsync();
+                _logger.LogError(ex, "Error loading dashboard");
+                _logger.LogError(ex, $"Error loading dashboard \n {user.Username} stuggling to log in");
+                return View("DashboardFallback");
+            }
         }
+        public ActionResult DashboardFallback()
+        { 
+           return View();
+
+        }
+
         [HttpPost]
         public async Task<IActionResult> CommitToPrayer(int prayerRequestId)
         {

@@ -66,7 +66,7 @@ namespace FlockStudy.Controllers
             var result = await _userService.CreateUserAsync(user, model.Password);
             if (!result)
             {
-                ModelState.AddModelError("", "Registration failed.");
+                ModelState.AddModelError("", "Registration failed. Email or Username Already In Use");
                 return View(model);
             }
             else

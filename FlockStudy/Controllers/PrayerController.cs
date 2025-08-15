@@ -1,4 +1,5 @@
-﻿using FlockStudy.Service;
+﻿using FlockStudy.Models.ViewModels;
+using FlockStudy.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -24,17 +25,50 @@ namespace FlockStudy.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(string title, string description)
+        [Route("add-prayer")]
+
+        public async Task<IActionResult> Create(AddPrayerViewModel model)
         {
-            if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(description))
-            {
-                ModelState.AddModelError("", "Title and description are required.");
-                return View();
-            }
+            if (!ModelState.IsValid)
+                return View(model);
 
             var userId = await _userService.GetCurrentUserId();
-            await _prayerService.CreatePrayerRequestAsync(userId, title, description);
+            await _prayerService.CreatePrayerRequestAsync(userId, model.Title, model.Description);
 
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        [Route("edit-prayer")]
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var userId = await _userService.GetCurrentUserId();
+
+            var request = await _prayerService.GetPrayerRequestByIdAsync(id,userId);
+            if (request == null)
+                return NotFound();
+
+            var update = new UpdatePrayerViewModel
+            {
+                Id = request.Id,
+                Title=request.Title,
+                Description=request.Description
+            };
+            return View(update);
+        }
+
+        [HttpPost]
+        [Route("edit-prayer")]
+
+        public async Task<IActionResult> Edit(UpdatePrayerViewModel model)
+        {
+
+            if (!ModelState.IsValid)
+                return View(model);
+            var userId = await _userService.GetCurrentUserId();
+
+            await _prayerService.UpdatePrayerRequestAsync(model.Id,userId, model.Title, model.Description);
             return RedirectToAction("Index", "Home");
         }
     }

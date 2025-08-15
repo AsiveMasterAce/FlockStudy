@@ -3,50 +3,77 @@
     ViewData["Title"] = "Prayer Dashboard";
 }
 
-<div class="mx-auto max-w-7xl p-4">
-    <!-- Header -->
-    <div class="mb-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-        <a asp-controller="prayer" asp-action="create" class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-            <i class="fas fa-plus"></i> New Prayer Request
-        </a>
-        <button type="button"
-                data-modal-target="logoutModal"
-                data-modal-toggle="logoutModal"
-                class="inline-flex items-center rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700">
-            <svg class="h-6 w-6 text-red-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2" />
-            </svg> 
-        </button>
-    </div>
+<div class="mx-auto max-w-7xl mobile-padding p-4 sm:p-6 lg:p-8">
+    <!-- Enhanced Header -->
+    <header class="glass-header mb-8 rounded-2xl p-6 shadow-lg">
+        <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
+            <div class="text-center sm:text-left">
+                <h1 class="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-3xl font-bold text-transparent">
+                    Prayer Dashboard
+                </h1>
+                <p class="mt-2 text-gray-600">Connect through prayer, strengthen through community</p>
+            </div>
+
+            <div class="flex flex-col gap-3 sm:flex-row">
+                <a asp-controller="prayer" asp-action="create" class="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 font-medium text-white shadow-lg transition-all hover:shadow-xl hover:scale-105">
+                    <i class="fas fa-plus group-hover:rotate-180 transition-transform duration-300"></i>
+                    <span>New Prayer Request</span>
+                </a>
+
+                <button type="button"
+                        data-modal-target="logoutModal"
+                        data-modal-toggle="logoutModal"
+                        class="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 px-4 py-3 font-medium text-white shadow-lg transition-all hover:shadow-xl hover:scale-105">
+                    <svg class="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
 
     <!-- My Commitments This Week -->
-    <section class="mb-8">
-        <h4 class="mb-3 text-lg font-semibold text-gray-700">My Prayer Commitments This Week</h4>
+    <section class="mb-12">
+        <div class="mb-6 flex items-center gap-3">
+            <div class="rounded-lg bg-gradient-to-r from-green-400 to-blue-500 p-2">
+                <i class="fas fa-hands-praying text-white"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800">My Prayer Commitments This Week</h2>
+        </div>
 
         @if (!Model.MyCommitments.Any())
         {
-            <div class="rounded-lg bg-blue-50 p-4 text-blue-700">
-                You haven't committed to any prayers this week. Browse available requests below!
+            <div class="glass-card rounded-2xl p-6 text-center">
+                <div class="mx-auto mb-4 w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
+                    <i class="fas fa-heart text-white text-xl"></i>
+                </div>
+                <p class="text-gray-600 font-medium">You haven't committed to any prayers this week.</p>
+                <p class="text-gray-500 text-sm mt-2">Browse available requests below to start your prayer journey!</p>
             </div>
         }
         else
         {
-            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach (var request in Model.MyCommitments)
                 {
-                    <div class="rounded-lg border bg-white p-4 shadow-sm @(request.IsCompletedThisWeek ? "border-green-500" : "border-gray-200")">
-                        <h6 class="font-semibold text-gray-800">@request.Title</h6>
-                        <p class="mt-1 text-sm text-gray-600">@request.Description</p>
-                        <small class="text-xs text-gray-500">Requested by: @request.RequestedBy</small>
-                        <div class="mt-3">
-                            <form method="post" action="/Home/MarkCompleted" class="inline">
-                                <input type="hidden" name="prayerRequestId" value="@request.Id" />
-                                <button type="submit" class="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm font-medium @(request.IsCompletedThisWeek ? "bg-green-500 text-white border-green-500 hover:bg-green-600" : "border-green-500 text-green-500 hover:bg-green-50")">
-                                    <i class="fas @(request.IsCompletedThisWeek ? "fa-check-circle" : "fa-circle")"></i>
-                                    @(request.IsCompletedThisWeek ? "Prayed ✓" : "Mark as Prayed")
-                                </button>
-                            </form>
+                    <div class="@(request.IsCompletedThisWeek ? "commitment-completed" : "commitment-pending") group rounded-2xl p-6 shadow-lg transition-all hover:shadow-xl hover:scale-105">
+                        <div class="mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">@request.Title</h3>
+                            <p class="mt-2 text-sm text-gray-600 leading-relaxed">@request.Description</p>
                         </div>
+
+                        <div class="mb-4 text-xs text-gray-500">
+                            <i class="fas fa-user mr-1"></i>
+                            Requested by: @request.RequestedBy
+                        </div>
+
+                        <form method="post" action="/Home/MarkCompleted" class="inline w-full">
+                            <input type="hidden" name="prayerRequestId" value="@request.Id" />
+                            <button type="submit" class="@(request.IsCompletedThisWeek ? "inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-3 font-medium text-white shadow-md transition-all hover:bg-green-600 hover:shadow-lg" : "group/btn inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-green-500 px-4 py-3 font-medium text-green-600 transition-all hover:bg-green-500 hover:text-white hover:shadow-lg")">
+                                <i class="fas @(request.IsCompletedThisWeek ? "fa-check-circle" : "fa-circle group-hover/btn:fa-check-circle transition-all")"></i>
+                                <span>@(request.IsCompletedThisWeek ? "Prayed ✓" : "Mark as Prayed")</span>
+                            </button>
+                        </form>
                     </div>
                 }
             </div>
@@ -54,42 +81,62 @@
     </section>
 
     <!-- Available Prayer Requests -->
-    <section class="mb-8">
-        <h4 class="mb-3 text-lg font-semibold text-gray-700">Available Prayer Requests</h4>
+    <section class="mb-12">
+        <div class="mb-6 flex items-center gap-3">
+            <div class="rounded-lg bg-gradient-to-r from-purple-400 to-pink-500 p-2">
+                <i class="fas fa-heart text-white"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800">Available Prayer Requests</h2>
+        </div>
 
         @if (!Model.AvailableRequests.Any())
         {
-            <div class="rounded-lg bg-blue-50 p-4 text-blue-700">
-                No prayer requests available right now.
+            <div class="glass-card rounded-2xl p-6 text-center">
+                <div class="mx-auto mb-4 w-16 h-16 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
+                    <i class="fas fa-dove text-white text-xl"></i>
+                </div>
+                <p class="text-gray-600 font-medium">No prayer requests available right now.</p>
+                <p class="text-gray-500 text-sm mt-2">Check back later for new prayer opportunities.</p>
             </div>
         }
         else
         {
-            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach (var request in Model.AvailableRequests)
                 {
-                    <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                        <h6 class="font-semibold text-gray-800">@request.Title</h6>
-                        <p class="mt-1 text-sm text-gray-600">@request.Description</p>
-                        <small class="block text-xs text-gray-500">Requested by: @request.RequestedBy</small>
-                        <small class="text-xs text-gray-500">@request.CommitmentCount people praying</small>
-                        <div class="mt-3">
-                            @if (!request.IsCommittedByCurrentUser)
-                            {
-                                <form method="post" action="/Home/CommitToPrayer" class="inline">
-                                    <input type="hidden" name="prayerRequestId" value="@request.Id" />
-                                    <button type="submit" class="inline-flex items-center gap-2 rounded-md bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700">
-                                        <i class="fas fa-hands-praying"></i> Commit to Pray
-                                    </button>
-                                </form>
-                            }
-                            else
-                            {
-                                <span class="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-                                    Already committed
-                                </span>
-                            }
+                    <div class="glass-card group rounded-2xl p-6 shadow-lg transition-all hover:shadow-xl hover:scale-105">
+                        <div class="mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">@request.Title</h3>
+                            <p class="mt-2 text-sm text-gray-600 leading-relaxed">@request.Description</p>
                         </div>
+
+                        <div class="mb-2 text-xs text-gray-500">
+                            <i class="fas fa-user mr-1"></i>
+                            Requested by: @request.RequestedBy
+                        </div>
+
+                        <div class="mb-4 flex items-center gap-2 text-xs text-blue-600">
+                            <i class="fas fa-users"></i>
+                            <span>@request.CommitmentCount people praying</span>
+                        </div>
+
+                        @if (!request.IsCommittedByCurrentUser)
+                        {
+                            <form method="post" action="/Home/CommitToPrayer" class="inline w-full">
+                                <input type="hidden" name="prayerRequestId" value="@request.Id" />
+                                <button type="submit" class="group/btn inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3 font-medium text-white shadow-md transition-all hover:shadow-lg hover:scale-105">
+                                    <i class="fas fa-hands-praying group-hover/btn:animate-pulse"></i>
+                                    <span>Commit to Pray</span>
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-100 px-4 py-3 font-medium text-green-700">
+                                <i class="fas fa-check"></i>
+                                <span>Already committed</span>
+                            </div>
+                        }
                     </div>
                 }
             </div>
@@ -97,26 +144,50 @@
     </section>
 
     <!-- My Prayer Requests -->
-    <section>
-        <h4 class="mb-3 text-lg font-semibold text-gray-700">My Prayer Requests</h4>
+    <section class="mb-8">
+        <div class="mb-6 flex items-center gap-3">
+            <div class="rounded-lg bg-gradient-to-r from-indigo-400 to-purple-500 p-2">
+                <i class="fas fa-user-heart text-white"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800">My Prayer Requests</h2>
+        </div>
 
         @if (!Model.MyRequests.Any())
         {
-            <div class="rounded-lg bg-blue-50 p-4 text-blue-700">
-                You haven't created any prayer requests yet.
+            <div class="glass-card rounded-2xl p-6 text-center">
+                <div class="mx-auto mb-4 w-16 h-16 rounded-full bg-gradient-to-r from-indigo-400 to-purple-500 flex items-center justify-center">
+                    <i class="fas fa-plus text-white text-xl"></i>
+                </div>
+                <p class="text-gray-600 font-medium">You haven't created any prayer requests yet.</p>
+                <p class="text-gray-500 text-sm mt-2">Share your prayer needs with the community.</p>
             </div>
         }
         else
         {
-            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach (var request in Model.MyRequests)
                 {
-                    <div class="rounded-lg border border-blue-400 bg-white p-4 shadow-sm">
-                        <h6 class="font-semibold text-gray-800">@request.Title</h6>
-                        <p class="mt-1 text-sm text-gray-600">@request.Description</p>
-                        <small class="mt-2 flex items-center gap-1 text-xs text-green-600">
-                            <i class="fas fa-users"></i> @request.CommitmentCount people praying for this
-                        </small>
+                    <div class="my-request-card group relative rounded-2xl p-6 shadow-lg transition-all hover:shadow-xl hover:scale-105">
+                        <!-- Edit button -->
+                        <a asp-action="Edit" asp-controller="Prayer" asp-route-id="@request.Id"
+                           class="absolute right-4 top-4 rounded-lg bg-white/80 p-2 text-indigo-600 opacity-0 shadow-md transition-all group-hover:opacity-100 hover:bg-white hover:text-indigo-700"
+                           title="Edit">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6-6 3 3-6 6H9v-3z" />
+                            </svg>
+                        </a>
+
+                        <div class="mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">@request.Title</h3>
+                            <p class="mt-2 text-sm text-gray-600 leading-relaxed">@request.Description</p>
+                        </div>
+
+                        <div class="flex items-center gap-2 text-sm font-medium text-green-600">
+                            <div class="rounded-full bg-green-100 p-1">
+                                <i class="fas fa-hands-praying text-xs"></i>
+                            </div>
+                            <span>@request.CommitmentCount people praying for this</span>
+                        </div>
                     </div>
                 }
             </div>

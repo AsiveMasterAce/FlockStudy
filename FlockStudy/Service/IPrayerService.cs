@@ -11,6 +11,8 @@ namespace FlockStudy.Service
         Task<bool> CommitToPrayerAsync(int userId, int prayerRequestId);
         Task<bool> MarkCompletedAsync(int userId, int prayerRequestId);
         Task<PrayerRequest> CreatePrayerRequestAsync(int userId, string title, string description);
+        Task<PrayerRequest?> GetPrayerRequestByIdAsync(int id, int userId);
+        Task<bool> UpdatePrayerRequestAsync(int id, int userId, string title, string description);
     }
     public class PrayerService : IPrayerService
     {
@@ -142,6 +144,28 @@ namespace FlockStudy.Service
         {
             var diff = (7 + (date.DayOfWeek - DayOfWeek.Sunday)) % 7;
             return date.AddDays(-1 * diff).Date;
+        }
+
+        public async Task<PrayerRequest?> GetPrayerRequestByIdAsync(int id, int userId)
+        {
+            return await _context.PrayerRequests
+                .FirstOrDefaultAsync(pr => pr.Id == id && pr.UserId == userId && pr.IsActive);
+        }
+
+        public async Task<bool> UpdatePrayerRequestAsync(int id, int userId, string title, string description)
+        {
+            var request = await _context.PrayerRequests
+                .FirstOrDefaultAsync(pr => pr.Id == id && pr.UserId == userId && pr.IsActive);
+
+            if (request == null)
+                return false;
+
+            request.Title = title;
+            request.Description = description;
+
+            _context.PrayerRequests.Update(request);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

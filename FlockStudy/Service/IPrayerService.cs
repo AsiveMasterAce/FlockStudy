@@ -27,9 +27,11 @@ namespace FlockStudy.Service
         public async Task<PrayerDashboardViewModel> GetDashboardAsync(int userId)
         {
             var currentWeekStart = GetWeekStart(DateTime.UtcNow);
+            var WeekAgo = DateTime.UtcNow.AddDays(-7);
+
 
             var availableRequests = await _context.PrayerRequests
-                .Where(pr => pr.IsActive && pr.UserId != userId)
+                .Where(pr => pr.IsActive && pr.UserId != userId && pr.CreatedAt>=WeekAgo)
                 .Include(pr => pr.User)
                 .Include(pr => pr.PrayerCommitments.Where(pc => pc.WeekStart == currentWeekStart))
                 .Select(pr => new PrayerRequestCardViewModel
@@ -63,7 +65,7 @@ namespace FlockStudy.Service
                 .ToListAsync();
 
             var myRequests = await _context.PrayerRequests
-                .Where(pr => pr.UserId == userId && pr.IsActive)
+                .Where(pr => pr.UserId == userId && pr.IsActive && pr.CreatedAt>=WeekAgo)
                 .Include(pr => pr.PrayerCommitments.Where(pc => pc.WeekStart == currentWeekStart))
                 .Select(pr => new PrayerRequestCardViewModel
                 {

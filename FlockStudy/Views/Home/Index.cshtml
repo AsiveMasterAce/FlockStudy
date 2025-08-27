@@ -101,13 +101,26 @@
                     <div class="@(request.IsCompletedThisWeek ? "commitment-completed" : "commitment-pending") group rounded-2xl p-6 shadow-lg transition-all hover:scale-105 hover:shadow-xl">
                         <div class="mb-4">
                             <h3 class="text-lg font-semibold text-gray-800">@request.Title</h3>
-                            <p class="mt-2 text-sm leading-relaxed text-gray-600">@request.Description</p>
+                            @{
+                                int wordLimit = 30;
+                                var words = request.Description.Split(' ');
+                                var shortDescription = words.Length > wordLimit
+                                ? string.Join(" ", words.Take(wordLimit)) + "..."
+                                : request.Description;
+                            }
+                            <p class="mt-2 text-sm leading-relaxed text-gray-600">   @shortDescription</p>
+                            @if (words.Length > wordLimit)
+                            {
+                                <a asp-action="Details" asp-controller="Prayer" asp-route-id="@request.Id" class="text-sm font-medium text-orange-600 hover:underline">
+                                    Read more
+                                </a>
+                            }
                         </div>
 
-                        <div class="mb-4 text-xs text-gray-500">
-                            <i class="fas fa-user mr-1"></i>
-                            Requested by: @request.RequestedBy
-                        </div>
+                          @*       <div class="mb-4 text-xs text-gray-500">
+                                    <i class="fas fa-user mr-1"></i>
+                                    Requested by: @request.RequestedBy
+                                </div> *@
 
                         <form method="post" action="/Home/MarkCompleted" class="inline w-full">
                             <input type="hidden" name="prayerRequestId" value="@request.Id" />

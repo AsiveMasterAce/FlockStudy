@@ -13,6 +13,7 @@ namespace FlockStudy.Service
         Task<PrayerRequest> CreatePrayerRequestAsync(int userId, string title, string description);
         Task<PrayerRequest?> GetPrayerRequestByIdAsync(int id, int userId);
         Task<bool> UpdatePrayerRequestAsync(int id, int userId, string title, string description);
+        Task<bool> DeletePrayerRequestAsync(int id, int userId);
     }
     public class PrayerService : IPrayerService
     {
@@ -149,7 +150,8 @@ namespace FlockStudy.Service
         public async Task<PrayerRequest?> GetPrayerRequestByIdAsync(int id, int userId)
         {
             return await _context.PrayerRequests
-                .FirstOrDefaultAsync(pr => pr.Id == id && pr.UserId == userId && pr.IsActive);
+            .Include(pr => pr.User)
+            .FirstOrDefaultAsync(pr => pr.Id == id && pr.IsActive);
         }
 
         public async Task<bool> UpdatePrayerRequestAsync(int id, int userId, string title, string description)
@@ -163,6 +165,20 @@ namespace FlockStudy.Service
             request.Title = title;
             request.Description = description;
 
+            _context.PrayerRequests.Update(request);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeletePrayerRequestAsync(int id, int userId)
+        {
+            var request = await _context.PrayerRequests
+                .FirstOrDefaultAsync(pr => pr.Id == id && pr.UserId == userId && pr.IsActive);
+
+            if (request == null)
+                return false;
+
+            request.IsActive = false;
             _context.PrayerRequests.Update(request);
             await _context.SaveChangesAsync();
             return true;

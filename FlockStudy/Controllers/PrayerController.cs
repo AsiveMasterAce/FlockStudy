@@ -71,5 +71,29 @@ namespace FlockStudy.Controllers
             await _prayerService.UpdatePrayerRequestAsync(model.Id,userId, model.Title, model.Description);
             return RedirectToAction("Index", "Home");
         }
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var userId = await _userService.GetCurrentUserId();
+            var result = await _prayerService.DeletePrayerRequestAsync(id, userId);
+
+            if (!result)
+                return NotFound();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        [Route("prayer/{id}")]
+        public async Task<IActionResult> Details([FromRoute] int id)
+        {
+            var userId = await _userService.GetCurrentUserId();
+            var request = await _prayerService.GetPrayerRequestByIdAsync(id, userId);
+
+            if (request == null)
+                return NotFound();
+
+            return View(request);
+        }
     }
 }

@@ -3,52 +3,94 @@
     ViewData["Title"] = "Prayer Dashboard";
 }
 
-<div class="mx-auto max-w-7xl mobile-padding p-4 sm:p-6 lg:p-8">
-    <!-- Enhanced Header -->
-    <header class="glass-header mb-8 rounded-2xl p-6 shadow-lg">
-        <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
-            <div class="text-center sm:text-left">
-                <h1 class="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-3xl font-bold text-transparent">
+<div class="mobile-padding mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+    <header class="glass-header mb-8 rounded-2xl p-6 shadow-sm">
+        <div class="flex items-center justify-between">
+            <!-- Title -->
+            <div class="text-left">
+                <h1 class="bg-clip-text text-3xl font-bold text-gray-900">
                     Prayer Dashboard
                 </h1>
-                <p class="mt-2 text-gray-600">Connect through prayer, strengthen through community</p>
+                <p class="mt-1 text-sm text-gray-600 sm:text-base">Connect through prayer, strengthen through community</p>
             </div>
 
-            <div class="flex flex-col gap-3 sm:flex-row">
-                <a asp-controller="prayer" asp-action="create" class="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 font-medium text-white shadow-lg transition-all hover:shadow-xl hover:scale-105">
-                    <i class="fas fa-plus group-hover:rotate-180 transition-transform duration-300"></i>
+            <!-- Mobile toggle -->
+            <div class="sm:hidden">
+                <button onclick="toggleMobileMenu()" class="rounded-md bg-orange-500 p-2 text-white">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="6" width="18" height="2" fill="currentColor" />
+                        <rect x="3" y="11" width="18" height="2" fill="currentColor" />
+                        <rect x="3" y="16" width="18" height="2" fill="currentColor" />
+                    </svg>
+
+                </button>
+            </div>
+
+            <div class="hidden flex-row gap-3 sm:flex">
+                <a asp-controller="prayer" asp-action="create"
+                   class="group inline-flex items-center gap-2 rounded-xl bg-orange-600 px-6 py-3 font-medium text-white shadow-lg transition-all hover:scale-105 hover:bg-orange-700">
+         
                     <span>New Prayer Request</span>
+                </a>
+
+                <a asp-controller="account" asp-action="Profile"
+                   class="group inline-flex items-center gap-2 rounded-xl bg-orange-400 px-6 py-3 font-medium text-white shadow-lg transition-all hover:scale-105 hover:bg-orange-500">
+                    <svg class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M5.121 17.804A9 9 0 1118.879 6.196 9 9 0 015.121 17.804zM15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>Profile</span>
                 </a>
 
                 <button type="button"
                         data-modal-target="logoutModal"
                         data-modal-toggle="logoutModal"
-                        class="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 px-4 py-3 font-medium text-white shadow-lg transition-all hover:shadow-xl hover:scale-105">
-                    <svg class="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 px-4 py-3 font-medium text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl">
+                    <svg class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                 </button>
             </div>
         </div>
+
+        <!-- Mobile Menu - HIDDEN BY DEFAULT -->
+        <div id="mobile-menu" class="mt-4 hidden flex-col gap-3 sm:hidden">
+            <a asp-controller="prayer" asp-action="create"
+               class="inline-flex items-center gap-2 rounded-xl bg-orange-600 px-6 py-3 font-medium text-white shadow-lg transition-all hover:scale-105 hover:bg-orange-700">
+                <i class="fas fa-plus"></i>
+                <span>New Prayer Request</span>
+            </a>
+
+            <a asp-controller="account" asp-action="Profile"
+               class="inline-flex items-center gap-2 rounded-xl bg-orange-400 px-6 py-3 font-medium text-white shadow-lg transition-all hover:scale-105 hover:bg-orange-500">
+                <span>Profile</span>
+            </a>
+
+            <button type="button"
+                    data-modal-target="logoutModal"
+                    data-modal-toggle="logoutModal"
+                    class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 px-4 py-3 font-medium text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl">
+                Logout
+            </button>
+        </div>
     </header>
+
 
     <!-- My Commitments This Week -->
     <section class="mb-12">
         <div class="mb-6 flex items-center gap-3">
-            <div class="rounded-lg bg-gradient-to-r from-green-400 to-blue-500 p-2">
-                <i class="fas fa-hands-praying text-white"></i>
-            </div>
+    
             <h2 class="text-2xl font-bold text-gray-800">My Prayer Commitments This Week</h2>
         </div>
 
         @if (!Model.MyCommitments.Any())
         {
             <div class="glass-card rounded-2xl p-6 text-center">
-                <div class="mx-auto mb-4 w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
-                    <i class="fas fa-heart text-white text-xl"></i>
+                <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-red-400 to-orange-500">
+                    <i class="fas fa-heart text-xl text-white"></i>
                 </div>
-                <p class="text-gray-600 font-medium">You haven't committed to any prayers this week.</p>
-                <p class="text-gray-500 text-sm mt-2">Browse available requests below to start your prayer journey!</p>
+                <p class="font-medium text-gray-600">You haven't committed to any prayers this week.</p>
+                <p class="mt-2 text-sm text-gray-500">Browse available requests below to start your prayer journey!</p>
             </div>
         }
         else
@@ -56,10 +98,10 @@
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach (var request in Model.MyCommitments)
                 {
-                    <div class="@(request.IsCompletedThisWeek ? "commitment-completed" : "commitment-pending") group rounded-2xl p-6 shadow-lg transition-all hover:shadow-xl hover:scale-105">
+                    <div class="@(request.IsCompletedThisWeek ? "commitment-completed" : "commitment-pending") group rounded-2xl p-6 shadow-lg transition-all hover:scale-105 hover:shadow-xl">
                         <div class="mb-4">
                             <h3 class="text-lg font-semibold text-gray-800">@request.Title</h3>
-                            <p class="mt-2 text-sm text-gray-600 leading-relaxed">@request.Description</p>
+                            <p class="mt-2 text-sm leading-relaxed text-gray-600">@request.Description</p>
                         </div>
 
                         <div class="mb-4 text-xs text-gray-500">
@@ -83,20 +125,18 @@
     <!-- Available Prayer Requests -->
     <section class="mb-12">
         <div class="mb-6 flex items-center gap-3">
-            <div class="rounded-lg bg-gradient-to-r from-purple-400 to-pink-500 p-2">
-                <i class="fas fa-heart text-white"></i>
-            </div>
+  
             <h2 class="text-2xl font-bold text-gray-800">Available Prayer Requests</h2>
         </div>
 
         @if (!Model.AvailableRequests.Any())
         {
             <div class="glass-card rounded-2xl p-6 text-center">
-                <div class="mx-auto mb-4 w-16 h-16 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
-                    <i class="fas fa-dove text-white text-xl"></i>
+                <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-orange-400 to-red-500">
+                    <i class="fas fa-dove text-xl text-white"></i>
                 </div>
-                <p class="text-gray-600 font-medium">No prayer requests available right now.</p>
-                <p class="text-gray-500 text-sm mt-2">Check back later for new prayer opportunities.</p>
+                <p class="font-medium text-gray-600">No prayer requests available right now.</p>
+                <p class="mt-2 text-sm text-gray-500">Check back later for new prayer opportunities.</p>
             </div>
         }
         else
@@ -104,10 +144,10 @@
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach (var request in Model.AvailableRequests)
                 {
-                    <div class="glass-card group rounded-2xl p-6 shadow-lg transition-all hover:shadow-xl hover:scale-105">
+                    <div class="glass-card group rounded-2xl p-6 shadow-lg transition-all hover:scale-105 hover:shadow-xl">
                         <div class="mb-4">
                             <h3 class="text-lg font-semibold text-gray-800">@request.Title</h3>
-                            <p class="mt-2 text-sm text-gray-600 leading-relaxed">@request.Description</p>
+                            <p class="mt-2 text-sm leading-relaxed text-gray-600">@request.Description</p>
                         </div>
 
                         <div class="mb-2 text-xs text-gray-500">
@@ -115,7 +155,7 @@
                             Requested by: @request.RequestedBy
                         </div>
 
-                        <div class="mb-4 flex items-center gap-2 text-xs text-blue-600">
+                        <div class="mb-4 flex items-center gap-2 text-xs text-red-600">
                             <i class="fas fa-users"></i>
                             <span>@request.CommitmentCount people praying</span>
                         </div>
@@ -124,7 +164,7 @@
                         {
                             <form method="post" action="/Home/CommitToPrayer" class="inline w-full">
                                 <input type="hidden" name="prayerRequestId" value="@request.Id" />
-                                <button type="submit" class="group/btn inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3 font-medium text-white shadow-md transition-all hover:shadow-lg hover:scale-105">
+                                <button type="submit" class="group/btn inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3 font-medium text-white shadow-md transition-all hover:scale-105 hover:shadow-lg">
                                     <i class="fas fa-hands-praying group-hover/btn:animate-pulse"></i>
                                     <span>Commit to Pray</span>
                                 </button>
@@ -132,7 +172,7 @@
                         }
                         else
                         {
-                            <div class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-100 px-4 py-3 font-medium text-green-700">
+                            <div class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-orange-100 px-4 py-3 font-medium text-orange-700">
                                 <i class="fas fa-check"></i>
                                 <span>Already committed</span>
                             </div>
@@ -146,20 +186,18 @@
     <!-- My Prayer Requests -->
     <section class="mb-8">
         <div class="mb-6 flex items-center gap-3">
-            <div class="rounded-lg bg-gradient-to-r from-indigo-400 to-purple-500 p-2">
-                <i class="fas fa-user-heart text-white"></i>
-            </div>
+     
             <h2 class="text-2xl font-bold text-gray-800">My Prayer Requests</h2>
         </div>
 
         @if (!Model.MyRequests.Any())
         {
             <div class="glass-card rounded-2xl p-6 text-center">
-                <div class="mx-auto mb-4 w-16 h-16 rounded-full bg-gradient-to-r from-indigo-400 to-purple-500 flex items-center justify-center">
-                    <i class="fas fa-plus text-white text-xl"></i>
+                <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-pink-100 to-pink-500">
+                    <i class="fas fa-plus text-xl text-white"></i>
                 </div>
-                <p class="text-gray-600 font-medium">You haven't created any prayer requests yet.</p>
-                <p class="text-gray-500 text-sm mt-2">Share your prayer needs with the community.</p>
+                <p class="font-medium text-gray-600">You haven't created any prayer requests yet.</p>
+                <p class="mt-2 text-sm text-gray-500">Share your prayer needs with the community.</p>
             </div>
         }
         else
@@ -167,10 +205,10 @@
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach (var request in Model.MyRequests)
                 {
-                    <div class="my-request-card group relative rounded-2xl p-6 shadow-lg transition-all hover:shadow-xl hover:scale-105">
+                    <div class="my-request-card group relative rounded-2xl p-6 shadow-lg transition-all hover:scale-105 hover:shadow-xl">
                         <!-- Edit button -->
                         <a asp-action="Edit" asp-controller="Prayer" asp-route-id="@request.Id"
-                           class="absolute right-4 top-4 rounded-lg bg-white/80 p-2 text-indigo-600 opacity-0 shadow-md transition-all group-hover:opacity-100 hover:bg-white hover:text-indigo-700"
+                           class="absolute right-4 top-4 rounded-lg bg-white/80 p-2 text-red-600 opacity-0 shadow-md transition-all group-hover:opacity-100 hover:bg-white hover:text-red-700"
                            title="Edit">
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6-6 3 3-6 6H9v-3z" />
@@ -179,11 +217,11 @@
 
                         <div class="mb-4">
                             <h3 class="text-lg font-semibold text-gray-800">@request.Title</h3>
-                            <p class="mt-2 text-sm text-gray-600 leading-relaxed">@request.Description</p>
+                            <p class="mt-2 text-sm leading-relaxed text-gray-900">@request.Description</p>
                         </div>
 
-                        <div class="flex items-center gap-2 text-sm font-medium text-green-600">
-                            <div class="rounded-full bg-green-100 p-1">
+                        <div class="flex items-center gap-2 text-sm font-medium text-orange-100">
+                            <div class="rounded-full bg-orange-100 p-1">
                                 <i class="fas fa-hands-praying text-xs"></i>
                             </div>
                             <span>@request.CommitmentCount people praying for this</span>
@@ -194,3 +232,17 @@
         }
     </section>
 </div>
+
+<script>
+    function toggleMobileMenu() {
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
+        } else {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+        }
+    }
+</script>

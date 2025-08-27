@@ -17,6 +17,8 @@ namespace FlockStudy.Service
         Task<User> GetUserByEmailAsync(string email);
         Task<bool> CreateUserAsync(User user, string password);
         Task<int> GetCurrentUserId();
+        Task<bool> UpdateUsernameAsync(int userId, string newUsername);
+        Task<bool> UpdatePasswordAsync(int userId, string currentPassword, string newPassword);
     }
     public class UserService : IUserService
     {
@@ -203,6 +205,63 @@ namespace FlockStudy.Service
             }
             int userId = int.Parse(userIdClaim);
             return userId;
+        }
+
+        public async Task<bool> UpdateUsernameAsync(int userId, string newUsername)
+        {
+            try
+            {
+                var user = await GetUserByIdAsync(userId);
+                if (user == null) return false;
+
+                // Check if username exists
+                var existingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Username.ToLower() == newUsername.ToLower());
+                if (existingUser != null && existingUser.Id != userId)
+                {
+                    _logger.LogWarning("Username {Username} already taken.", newUsername);
+                    return false;
+                }
+
+                user.Username = newUsername;
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("User {Email} updated username to {Username}", user.Email, newUsername);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating username for user {UserId}", userId);
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdatePasswordAsync(int userId, string currentPassword, string newPassword)
+        {
+            try
+            {
+                var user = await GetUserByIdAsync(userId);
+                if (user == null) return false;
+
+                if (!_passwordService.VerifyPassword(currentPassword, user.PasswordHash))
+                {
+                    _logger.LogWarning("Password update failed: wrong current password for {Email}", user.Email);
+                    return false;
+                }
+
+                user.PasswordHash = _passwordService.HashPassword(newPassword);
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("User {Email} updated password successfully", user.Email);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating password for user {UserId}", userId);
+                return false;
+            }
         }
     }
 }

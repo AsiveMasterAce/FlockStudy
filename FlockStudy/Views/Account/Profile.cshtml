@@ -1,0 +1,73 @@
+﻿@model FlockStudy.Models.User
+@{
+}
+
+<div class="mx-auto mt-10 max-w-2xl rounded-xl bg-white p-8 shadow-md">
+    <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
+        <h2 class="mb-6 text-2xl font-bold text-gray-900">Profile</h2>
+        <div class="flex flex-col gap-3 sm:flex-row">
+            <a asp-controller="Home" asp-action="Index"
+               class="group mb-4 inline-flex items-center gap-2 rounded-xl bg-gray-600 px-3 py-2 font-medium text-white transition-all hover:bg-gray-700">
+                <span>Back</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <p class="text-gray-600"><strong>Email:</strong> <span class="text-gray-900">@Model.Email</span></p>
+        <p class="text-gray-600"><strong>Username:</strong> <span class="text-gray-900">@Model.Username</span></p>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="mb-4 rounded-lg bg-red-100 p-3 text-red-700">
+            @TempData["Error"]
+        </div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="mb-4 rounded-lg bg-green-100 p-3 text-green-700">
+            @TempData["Success"]
+        </div>
+    }
+
+    <hr class="my-6 border-gray-200" />
+
+    <h3 class="mb-4 text-xl font-semibold text-gray-900">Update Username</h3>
+    <form asp-action="UpdateUsername" method="post" class="space-y-4">
+        <div>
+            <input type="text" name="NewUsername" placeholder="New Username"
+                   class="w-full rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
+        </div>
+        <button type="submit"
+                class="rounded-xl bg-orange-600 px-5 py-2 text-white shadow transition hover:scale-105 hover:bg-orange-700">
+            Update Username
+        </button>
+    </form>
+
+    <hr class="my-6 border-gray-200" />
+
+    <h3 class="mb-4 text-xl font-semibold text-gray-900">Update Password</h3>
+    <form asp-action="UpdatePassword" method="post" class="space-y-4">
+        <div>
+            <input type="password" name="CurrentPassword" placeholder="Current Password"
+                   class="w-full rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
+        </div>
+        <div>
+            <input type="password" name="NewPassword" placeholder="New Password"
+                   class="w-full rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
+        </div>
+        <div>
+            <input type="password" name="ConfirmNewPassword" placeholder="Confirm New Password"
+                   class="w-full rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500" required />
+        </div>
+        <button type="submit"
+                class="rounded-xl bg-green-600 px-5 py-2 text-white shadow transition hover:scale-105 hover:bg-green-700">
+            Update Password
+        </button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
